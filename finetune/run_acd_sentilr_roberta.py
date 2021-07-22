@@ -20,9 +20,9 @@ from tqdm import tqdm, trange
 
 from pytorch_transformers import (WEIGHTS_NAME, RobertaTokenizer, RobertaConfig, AdamW, WarmupLinearSchedule)
 
-from modeling_sentilr_roberta import RobertaForMultiLabelClassification
-from absa_data_utils_sentilr import ABSATokenizer_roberta, convert_examples_to_features_roberta
-from absa_data_utils_sentilr import AcdProcessor_14, AcdProcessor_16
+from finetune.modeling_sentilr_roberta import RobertaForMultiLabelClassification
+from finetune.absa_data_utils_sentilr import ABSATokenizer_roberta, convert_examples_to_features_roberta
+from finetune.absa_data_utils_sentilr import AcdProcessor_14, AcdProcessor_16
 
 from sklearn.metrics import f1_score
 

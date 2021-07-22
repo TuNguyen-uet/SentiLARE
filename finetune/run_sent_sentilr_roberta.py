@@ -2,7 +2,6 @@
 # The code is modified based on run_glue.py in pytorch-transformers
 
 from __future__ import absolute_import, division, print_function
-
 import argparse
 import glob
 import logging
@@ -18,12 +17,12 @@ from tqdm import tqdm, trange
 
 from pytorch_transformers import (WEIGHTS_NAME, RobertaTokenizer, RobertaConfig, AdamW, WarmupLinearSchedule)
 
-from modeling_sentilr_roberta import RobertaForSequenceClassification
+from finetune.modeling_sentilr_roberta import RobertaForSequenceClassification
 
 from sklearn.metrics import f1_score
-from sent_data_utils_sentilr import convert_examples_to_features_roberta
+from finetune.sent_data_utils_sentilr import convert_examples_to_features_roberta
 
-from sent_data_utils_sentilr import sstProcessor, mrProcessor, imdbProcessor, yelp2Processor, yelp5Processor
+from finetune.sent_data_utils_sentilr import sstProcessor, mrProcessor, imdbProcessor, yelp2Processor, yelp5Processor
 
 logger = logging.getLogger(__name__)
 

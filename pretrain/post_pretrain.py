@@ -10,11 +10,11 @@ import subprocess
 import torch
 from torch.utils.data import RandomSampler, DataLoader
 
-from tokenization_roberta import RobertaTokenizer
-from modeling_roberta import RobertaForPreTraining
-from optimization import AdamW, WarmupLinearSchedule
-from data_label import Yelp
-from utils import set_log, AverageMeter
+from pretrain.tokenization_roberta import RobertaTokenizer
+from pretrain.modeling_roberta import RobertaForPreTraining
+from pretrain.optimization import AdamW, WarmupLinearSchedule
+from pretrain.data_label import Yelp
+from pretrain.utils import set_log, AverageMeter
 
 logger = logging.getLogger()
 

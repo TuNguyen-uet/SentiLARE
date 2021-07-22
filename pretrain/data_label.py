@@ -14,8 +14,8 @@ import time
 import codecs
 
 
-from utils import set_log
-from tokenization_roberta import RobertaTokenizer
+from pretrain.utils import set_log
+from pretrain.tokenization_roberta import RobertaTokenizer
 
 logger = logging.getLogger()
 

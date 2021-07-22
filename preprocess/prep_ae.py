@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 import random
 random.seed(1337)
 np.random.seed(1337)
-from aspect_utils import process_text, load_sentinet
+from preprocess.aspect_utils import process_text, load_sentinet
 
 valid_split=150
 polar_idx={'positive': 0, 'negative': 1, 'neutral': 2, 'conflict': 3}

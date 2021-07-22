@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss, MSELoss
 
-from modeling_bert import BertEmbeddings, BertLayerNorm, BertModel, BertPreTrainedModel, gelu, BertPreTrainingHeads
+from pretrain.modeling_bert import BertEmbeddings, BertLayerNorm, BertModel, BertPreTrainedModel, gelu, BertPreTrainingHeads
 from pytorch_transformers.configuration_roberta import RobertaConfig
 from pytorch_transformers.file_utils import add_start_docstrings
 

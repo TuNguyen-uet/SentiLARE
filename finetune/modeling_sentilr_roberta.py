@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss, MSELoss, BCELoss
 
-from modeling_sentilr import BertEmbeddings, BertLayerNorm, BertModel, BertPreTrainedModel, gelu
+from finetune.modeling_sentilr import BertEmbeddings, BertLayerNorm, BertModel, BertPreTrainedModel, gelu
 from pytorch_transformers import RobertaConfig
 
 logger = logging.getLogger(__name__)

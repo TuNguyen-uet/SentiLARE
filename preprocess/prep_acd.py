@@ -11,7 +11,7 @@ import random
 random.seed(1337)
 np.random.seed(1337)
 from nltk.tokenize import word_tokenize
-from aspect_utils import process_text, load_sentinet
+from preprocess.aspect_utils import process_text, load_sentinet
 
 valid_split=150
 sem14_category = {'food':0, 'service':1, 'price':2, 'ambience':3, 'anecdotes/miscellaneous':4}
