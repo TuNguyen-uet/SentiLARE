@@ -20,12 +20,12 @@ from tqdm import tqdm, trange
 
 from pytorch_transformers import (WEIGHTS_NAME, RobertaTokenizer, RobertaConfig, AdamW, WarmupLinearSchedule)
 
-from finetune.modeling_sentilr_roberta import RobertaForTokenClassification
-from finetune.absa_data_utils_sentilr import ABSATokenizer_roberta
+from modeling_sentilr_roberta import RobertaForTokenClassification
+from absa_data_utils_sentilr import ABSATokenizer_roberta
 
 from sklearn.metrics import f1_score
 
-from finetune.absa_data_utils_sentilr import convert_examples_to_features_roberta, AeProcessor
+from absa_data_utils_sentilr import convert_examples_to_features_roberta, AeProcessor
 
 logger = logging.getLogger(__name__)
 

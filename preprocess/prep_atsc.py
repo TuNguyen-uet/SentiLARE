@@ -12,7 +12,7 @@ import random
 random.seed(1337)
 np.random.seed(1337)
 from nltk.tokenize import word_tokenize
-from preprocess.aspect_utils import process_text, load_sentinet
+from aspect_utils import process_text, load_sentinet
 
 sentinet, gloss_embedding, gloss_embedding_norm = load_sentinet('SentiWordNet_3.0.0.txt', 'gloss_embedding.npy')
 
