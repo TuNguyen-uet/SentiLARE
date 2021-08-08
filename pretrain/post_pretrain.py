@@ -193,9 +193,9 @@ def main():
     if not args.no_log:
         set_log(args.log_dir)
 
-    tokenizer = RobertaTokenizer.from_pretrained(args.pretrain_bert_dir)
+    tokenizer = RobertaTokenizer.from_pretrained(args.pretrain_bert_dir)    # use GPT2Tokenizer to tokenize texts
     model = RobertaForPreTraining.from_pretrained(args.pretrain_bert_dir, pos_tag_embedding=is_pos_embedding,
-                                                  senti_embedding=is_senti_embedding, polarity_embedding=is_polarity_embedding)
+                                                  senti_embedding=is_senti_embedding, polarity_embedding=is_polarity_embedding) # create RoBERTa model for pretraining
     if args.fp16:
         model.half()
     model.to(args.device)
@@ -205,10 +205,10 @@ def main():
     # Load pre-training data
     logging.info('Loading yelp pretraining data...')
     yelp = Yelp(args, tokenizer, max_seq_length=args.max_seq_length)
-    sampler = RandomSampler(yelp)
-    loader = DataLoader(yelp, 
+    sampler = RandomSampler(yelp)   # randomly sample data for validation and test set
+    loader = DataLoader(yelp,
                         sampler=sampler, 
-                        batch_size=args.batch_size, 
+                        batch_size=args.batch_size, # 400
                         num_workers=WORKERS,
                         pin_memory=args.cuda)
     

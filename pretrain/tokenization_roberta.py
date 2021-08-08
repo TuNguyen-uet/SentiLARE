@@ -55,7 +55,7 @@ class RobertaTokenizer(GPT2Tokenizer):
     """
     RoBERTa BPE tokenizer, derived from the GPT-2 tokenizer. Peculiarities:
         - Byte-level Byte-Pair-Encoding
-        - Requires a space to start the input string => will add a space is there isn't.
+        - Requires a space to start the input string => will add a space if there isn't.
           As a consequence, this tokenizer `encode` and `decode` method will not conserve
           the absence of a space at the beginning of a string: `tokenizer.decode(tokenizer.encode("Hello")) = " Hello"
     """

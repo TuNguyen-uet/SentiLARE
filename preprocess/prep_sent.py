@@ -15,7 +15,7 @@ from nltk.stem import WordNetLemmatizer
 model = SentenceTransformer('sentence-transformers/bert-base-nli-mean-tokens')
 
 # Refer to https://nlp.stanford.edu/software/tagger.shtml to download the tagging model
-eng_tag=StanfordPOSTagger(model_filename='corenlp/postagger/models/english-left3words-distsim.tagger', \
+eng_tag = StanfordPOSTagger(model_filename='corenlp/postagger/models/english-left3words-distsim.tagger', \
                           path_to_jar='corenlp/postagger/stanford-postagger-3.9.2.jar')
 
 # verb(v), adjective(a), adverb(r), noun(n), others(u)
@@ -23,6 +23,7 @@ pos_tag_ids_map = {'v':0, 'a':1, 'r':2, 'n':3, 'u':4}
 
 lemmatizer = WordNetLemmatizer()
 
+# Map the words' POS tag, got from using eng_tag(StanfordPOSTagger), to one of 5 legal POS tags in this project
 def convert_postag(pos):
     """Convert NLTK POS tags to SentiWordNet's POS tags."""
     if pos in ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']:
@@ -86,11 +87,12 @@ def load_sentinet(senti_file_name, gloss_file_name):
 
     return sentinet, gloss_embedding, gloss_emb_norm
 
+# Calculate the similarity between input texts and gloss
 def cos_sim(a, b, norm_a, norm_b):
     dot_prod = np.dot(a,b)
     return dot_prod / (norm_a * norm_b)
 
-
+# Get POS tags and Polarities for each word
 def process_text(text_list, label_list, sentinet, gloss_embedding, gloss_emb_norm):
     sent_list = []
     sent_list_str = []
@@ -114,9 +116,9 @@ def process_text(text_list, label_list, sentinet, gloss_embedding, gloss_emb_nor
     sent_split = eng_tag.tag_sents(sent_list)
 
     # sentence embedding
-    corpus_embedding = model.encode(sent_list_str, batch_size=64)
+    corpus_embedding = model.encode(sent_list_str, batch_size=64) # convert text -> vector (768,)
     corpus_embedding = np.array(corpus_embedding)
-    corpus_emb_norm = [np.linalg.norm(corpus_embedding[id]) for id in range(len(corpus_embedding))]
+    corpus_emb_norm = [np.linalg.norm(corpus_embedding[id]) for id in range(len(corpus_embedding))] # vector (768,) -> 1 real number
     corpus_emb_norm = np.array(corpus_emb_norm)
     assert len(corpus_embedding) == len(sent_split)
 
@@ -142,9 +144,10 @@ def process_text(text_list, label_list, sentinet, gloss_embedding, gloss_emb_nor
                         sent_emb, sent_norm = corpus_embedding[sent_id], corpus_emb_norm[sent_id]
                         sim_score = cos_sim(gloss_emb, sent_emb, gloss_norm, sent_norm)
                         sim_list.append((sim_score + 1) / (2 * ele_term[0]))
-                        score_list.append(ele_term[1] - ele_term[2])
+                        score_list.append(ele_term[1] - ele_term[2]) # pos-score - neg-score
 
-                    sim_exp = [math.exp(sim_list[id]) for id in range(len(sim_list))]
+                    # Calculate the sentiment polarity for each word in a text
+                    sim_exp = [math.exp(sim_list[id]) for id in range(len(sim_list))] # math.exp(x) = e^x
                     sum_sim_exp = sum(sim_exp)
                     sim_exp = np.array([sim_exp[id] / sum_sim_exp for id in range(len(sim_exp))])
                     score_list = np.array(score_list)
@@ -188,22 +191,32 @@ def read_tsv(input_file, quotechar=None):
 def convert_sentence(path, set_name, sentinet, gloss_embedding, gloss_embedding_norm):
     data = read_tsv(path + set_name + ".tsv")
     text_list, label_list = [], []
-    for x in tqdm(data[1:]): # remove the title line
-        text_list.append(x[0])
-        label_list.append(int(x[1]))
+    for x in tqdm(data[1:]):    # remove the title line
+        text_list.append(x[0])  # get all input texts
+        label_list.append(int(x[1]))    # label of texts (1,2,3,4,5)
+
+    # Get POS tag and Polarity for each word
     clean_text_list, pos_list, senti_list, clean_label_list = process_text(text_list, label_list, sentinet, gloss_embedding, gloss_embedding_norm)
+
+    # Write preprocessed data to new file
     text_pos_senti_list = []
     for data_id in range(len(clean_text_list)):
         text_pos_senti_list.append([clean_text_list[data_id], pos_list[data_id], senti_list[data_id], clean_label_list[data_id]])
     write(path + set_name + "_newpos.txt", text_pos_senti_list)
 
 
-
+# In this python file, the authors just preprocess in 3 datasets which are MR, SST, IMDB
+# but the main datasets used for not only pre-training but also the whole project are already preprocessed Yelp data files
 path_set = ["raw_data/sent/mr/", "raw_data/sent/sst/", "raw_data/sent/imdb/"]
 set_name = ["train", "dev", "test"]
 
 # Refer to https://github.com/aesuli/SentiWordNet to download SentiWordNet 3.0
 sentinet, gloss_embedding, gloss_embedding_norm = load_sentinet('SentiWordNet_3.0.0.txt', 'gloss_embedding.npy')
+# sentinet: a dictionary contains:
+#   dictionary of words with their POS
+#       each POS of a word has a list(s) indexs likes [sn, pos-score, neg-score, gloss, line_id-26]
+#
+# gloss_embedding.npy stores 117659 embedding vectors obtained by Sentence-BERT for each gloss
 
 for path in path_set:
     for task in set_name:

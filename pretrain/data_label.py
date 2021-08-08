@@ -19,10 +19,26 @@ from pretrain.tokenization_roberta import RobertaTokenizer
 
 logger = logging.getLogger()
 
-YELP_POS_DIR = './yelp_bert_format_word_and_pos.txt'
-YELP_STAR_DIR = './yelp_stars.txt'
-SENTIWORD_DIR = './yelp_sentiment_label.txt'
+YELP_POS_DIR = './yelp_bert_format_word_and_pos.txt'   #including tokenized texts and the POS tags of each word
+YELP_STAR_DIR = './yelp_stars.txt'          # including the review-level (text-level) sentiment label
+SENTIWORD_DIR = './yelp_sentiment_label.txt'    # including the word-level sentiment polarities
 
+'''
+yelp_bert_format_word_and_pos.txt sample: (a/ n/ v/ r/ u denotes adjective/ noun/ verb/ adverb/ others, respectively)
+    Total#a bill#n for#u this#u horrible#a service#n ?#u
+    Over#u $#u 8Gs#u .#u
+    These#u crooks#n actually#r had#v the#u nerve#n to#u charge#v us#u $#u 69#u for#u 3#u pills#n .#u
+    I#u checked#v online#n the#u pills#n can#u be#v had#v for#u 19#u cents#n EACH#n !#u
+    Avoid#v Hospital#n ERs#n at#u all#u costs#n .#u
+yelp_sentiment_label.txt sample: (0 / 1 / 2 denotes negative / positive / neutral, respectively)
+    2 2 2 2 0 2 2
+    2 2 2 2
+    2 0 1 0 2 2 2 1 2 2 2 2 2 0 2
+    2 1 2 2 0 2 1 0 2 2 2 2 2
+    0 1 1 2 2 2 2
+yelp_stars.txt sample:
+    1.0
+'''
 
 class Yelp(Dataset):
     def __init__(self, args, tokenizer, max_seq_length=512):
@@ -63,14 +79,14 @@ class Yelp(Dataset):
                     para_senti = []
                     
         count = 0
-        print(len(self.exs))
-        print(senti_cnt)
+        print(len(self.exs))    # number of samples (or review-level samples) in the dataset
+        print(senti_cnt)        # number of lines of text with polarity scores
         with open(starfilename, 'r') as f:
             for i, line in enumerate(f.readlines()):
                 self.exs[i].append(eval(line) - 1.0)
                 count += 1
         print('load yelp star complete')
-        assert count == len(self.exs)
+        assert count == len(self.exs)   # Check if every sample has a review-level sentiment label
 
         print('load pos tags complete')
 
